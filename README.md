@@ -3,6 +3,9 @@ An 8-bit CPU which purposely introduces off-by-one errors in addition. Built on 
 
 ## Why? Who would want this?
 
+Why not? Nobody wants this...
+
+### But actually...
 I created this at the Stupid Hackathon 2018 in Amsterdam, in which attendees are challenged to build something amazing, stupid, and useless.
 
 https://stupidhackathon.wtf
