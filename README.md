@@ -5,19 +5,19 @@ An 8-bit CPU which purposely introduces off-by-one errors in addition. Built on 
 
 Instructions are 16-bits wide. The CPU supports the following instructions:
 
-### NOP
+#### NOP
 Does nothing
 
-### SET [reg:dest] [constant]
+#### SET [reg:dest] [constant]
 Sets the value in reg:dest to a constant value
 
-### ADD [reg:dest] [reg:src_A] [reg:src_B]
+#### ADD [reg:dest] [reg:src_A] [reg:src_B]
 Sets the value in reg:dest to 1 + the sum of the values in reg:src_A and reg:src_B
 
-### JMP [reg:src]
+#### JMP [reg:src]
 Sets the program counter to the value stored in reg:src
 
-### JMP [constant]
+#### JMP [constant]
 Sets the program counter to a constant value
 
 ## Registers
