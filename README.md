@@ -36,3 +36,7 @@ The CPU has a 7-bit address bus connecting the core to ROM.
 
 ### RAM
 None currently. Send a pull request if you want some RAM.
+
+## Faults and Debugging
+
+Under normal operation the LED closest to the reset button on the Mojo board remains lit, while the 7 remaining LEDs indicate the value of the address bus between the CPU core and the program ROM. When invalid addresses are accessed within the ROM module a fault condition is triggered which halts the CPU, and disables the LED closest to the reset button. The remaining LEDs which are lit in a fault condition indicate the attempted address access which caused the fault.
