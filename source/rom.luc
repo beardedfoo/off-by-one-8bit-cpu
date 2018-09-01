@@ -1,0 +1,23 @@
+module rom (
+    input address[7],
+    output data[16],
+    output fault
+  ) {
+
+  always {
+    fault = 1d0;
+    
+    case(address) {
+      0: data = c{Inst.SET, Reg.B, 8d40}; // Set decimal 40 in register B
+      1: data = c{Inst.SET, Reg.C, 8d2};  // Set decimal 2 in register C
+      2: data = c{Inst.ADD, Reg.A, Reg.B, Reg.C}; // Put the sum of registers B and C in register A
+      3: data = c{Inst.JMP, Reg.A, 8hx}; // Set the program counter to the value in register A
+      43: data = c{Inst.JMP, Reg.PC, 8d0}; // Set the program counter to 0
+      
+      // When non-declared address space is accessed set the fault bit
+      default:
+        data = 16d0;
+        fault = 1d1;
+    }
+  }
+}
