@@ -1,6 +1,12 @@
 # off-by-one-8bit-cpu
 An 8-bit CPU which purposely introduces off-by-one errors in addition. Built on the Mojo V3 FPGA board.
 
+## Why? Who would want this?
+
+I created this at the Stupid Hackathon 2018 in Amsterdam, in which attendees are challenged to build something amazing, stupid, and useless.
+
+https://stupidhackathon.wtf
+
 ## Instruction Set
 
 Instructions are 16-bits wide. The CPU supports the following instructions:
