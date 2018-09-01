@@ -1,0 +1,88 @@
+global Inst {
+  const NOP = 4d0; // Does nothing
+  const JMP = 4d1; // Jumps to an instruction
+  const SET = 4d2; // Sets a register value
+  const ADD = 4d3; // Place the sum of two registers into a register
+}
+
+global Reg {
+  const PC = 4d0;
+  const A = 4d1;
+  const B = 4d2;
+  const C = 4d3;
+}
+
+module cpu (
+    input clk,  // clock
+    input rst,  // reset
+    output led[8]
+  ) {
+    
+  // Instruction data is broken into sub-signals
+  sig op[4];
+  sig arg1[4];
+  sig arg2[4];
+  sig arg3[4];
+  sig constant[8];
+  
+  // Instruction data is contained in ROM
+  rom instRom;
+  
+  // Connect clock and reset signals to the DFF's
+  .clk(clk), .rst(rst) {
+    dff reg[4][8]; // Create 16 registers
+    dff fault; // Create a register to track when a fault has occurred
+  }
+  
+  always {
+    // Show 7 bits of PC on the LED's 
+    led[6:0] = reg.q[Reg.PC][6:0];
+    
+    // Connect 7 bits of PC to the ROM (7-bit address space)
+    instRom.address = reg.q[Reg.PC][6:0];
+    
+    // Wire the instruction parts to corresponding signals
+    op = instRom.data[15:12];
+    arg1 = instRom.data[11:8];
+    arg2 = instRom.data[7:4];
+    arg3 = instRom.data[3:0];
+    constant = instRom.data[7:0];        
+    
+    // Use the LED closest to the reset button to show faults
+    // (lit == normal operation, not lit == fault)
+    // When a fault is indicated the remaining LEDs show the
+    // PC value
+    led[7] = ~fault.q;
+    
+    // When no fault condition is present process instructios
+    if (fault.q == 0) {
+      // When there is a fault in the ROM access, halt the CPU
+      if (instRom.fault) {
+        fault.d = 1;
+      } else {
+        // On most cycles increment the program counter
+        reg.d[Reg.PC] = reg.q[Reg.PC] + 1;
+        
+        case(op) {
+          // The JMP operation manipulates the program counter by jumping to either
+          // a constant address or an address stored in a register other than PC.
+          Inst.JMP:
+            // If arg1 == PC, jump to the constant value
+            if (arg1 == Reg.PC) {
+              reg.d[Reg.PC] = constant;
+              
+            // If a different register is specified as arg1, jump to the value stored in that register
+            } else {
+              reg.d[Reg.PC] = reg.q[arg1];
+            }
+            
+          // The SET operation sets a constant value in a register
+          Inst.SET: reg.d[arg1] = constant;
+          
+          // The ADD operation calculates a sum and places the result in the register arg1
+          Inst.ADD: reg.d[arg1] = reg.q[arg2] + reg.q[arg3] + 1;
+        }
+      }
+    }
+  }
+}
